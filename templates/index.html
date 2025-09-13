@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <article>
+        <h2 style="text-align: center;">Add a New Task</h2>
+        <form action="{{ url_for('add_task') }}" method="POST">
+            <div class="grid">
+                <input type="text" id="title" name="title" placeholder="Task Title" required>
+                <select id="subject" name="subject" required>
+                    <option value="" disabled selected>Select a Subject</option>
+                    {% for subject in subjects %}
+                        <option value="{{ subject }}">{{ subject }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <label for="due_date">Due Date</label>
+            <input type="date" id="due_date" name="due_date">
+            <button type="submit">Add Task</button>
+        </form>
+    </article>
+
+    <h2 style="text-align: center;">Your Tasks</h2>
+    <table>
+        <thead>
+            <tr>
+                <th scope="col">Title</th>
+                <th scope="col">Subject</th>
+                <th scope="col">Due Date</th>
+                <th scope="col">Status</th>
+                <th scope="col" colspan="2">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for task in tasks %}
+            <tr>
+                <td class="{{ 'completed' if task.status == 'Completed' else '' }}">{{ task.title }}</td>
+                <td><small>{{ task.subject }}</small></td>
+                <td>{{ task.due_date.strftime('%d %b, %Y') if task.due_date else 'N/A' }}</td>
+                <td><a href="{{ url_for('update_task_status', task_id=task.id) }}" role="button" class="contrast">{{ task.status }}</a></td>
+                <td><a href="{{ url_for('delete_task', task_id=task.id) }}" role="button" class="secondary outline">Delete</a></td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="5" style="text-align: center;">No tasks yet. Add one above!</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}
